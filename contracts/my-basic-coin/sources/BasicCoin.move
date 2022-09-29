@@ -150,19 +150,24 @@ module BasicCoin::BasicCoin {
         ensures balance_post == balance + amount;
     }
 
-    
+    // two type, two coin
     struct MyOddCoin has drop {}
+
+    struct SecondCoin has drop {}
 
     #[test(account = @0xC0FFEE)]
     fun test_mint_10(account: signer) acquires Balance {
         let addr = signer::address_of(&account);
         publish_balance<MyOddCoin>(&account);
-        let t = MyOddCoin {};
-        mint(addr, 10, t);
-        // Make sure there is a `Coin` resource under `addr` with a value of `10`.
-        // We can access this resource and its value since we are in the
-        // same module that defined the `Coin` resource.
-        // println!("{}", borrow_global<Balance<MyOddCoin>>(addr).coin.value);
+        // let t = MyOddCoin {};
+        mint(addr, 10, MyOddCoin {});
         assert!(borrow_global<Balance<MyOddCoin>>(addr).coin.value == 10, 0);
+        mint(addr, 10, MyOddCoin {});
+        assert!(borrow_global<Balance<MyOddCoin>>(addr).coin.value == 20, 0);
+
+        publish_balance<SecondCoin>(&account);
+        let s = SecondCoin {};
+        mint(addr, 9, s);
+        assert!(borrow_global<Balance<SecondCoin>>(addr).coin.value == 9, 0);
     }
 }
