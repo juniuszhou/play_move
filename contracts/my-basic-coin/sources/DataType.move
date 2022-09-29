@@ -23,8 +23,8 @@ module DataType::DataType {
        
     }
 
-    #[test]
-    fun test_address() {
+    #[test(account = @0x01010101010101010101)]
+    fun test_address(account: signer) {
         let a: address = @0x01;
         let b: address = @0x00000000000000000000000000000001;
 
@@ -37,7 +37,7 @@ module DataType::DataType {
         let _: address = @std;
 
         let d: address = @0x01010101010101010101;
-        let s: signer = signer {address: d};
+        assert!(d == signer::address_of(&account), 0);
 
     }
 }
